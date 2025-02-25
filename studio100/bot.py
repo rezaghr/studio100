@@ -28,7 +28,7 @@ django.setup()
 # importing models and needed modules from django.
 from django.db import transaction
 from django.db.models import F
-from admin_panel.models import user_data, price
+from admin_panel.models import user_data, price, Video
 from checkout.models import invoices
 
 CHANNEL_ID = os.getenv("CHANNEL_ID")
@@ -257,6 +257,47 @@ async def check_user_subscription(context: CallbackContext):
         except Exception as e:
             print(f"[record--error] - time: {datetime.now(tz=timezone('Asia/Tehran'))} -- Error kicking user {user.id}: {e}")
 
+async def get_video(update: Update, context: CallbackContext):
+    """
+    Fetches the most recent video uploaded via the admin panel
+    and sends it to the user.
+    """
+    try:
+        # Get the latest uploaded video
+        video = await Video.objects.all().order_by('-uploaded_at').afirst()
+        if video:
+            video_path = video.video_file.path
+            # Sending the video using its file path. Make sure your MEDIA_ROOT is accessible.
+            await update.message.reply_video(
+                video=InputFile(open(video_path, 'rb')),
+                caption=video.title
+            )
+        else:
+            await update.message.reply_text("هیچ ویدیویی یافت نشد.")
+    except Exception as e:
+        print(f"[record--error] Error in get_video: {e}")
+        await update.message.reply_text("مشکلی در ارسال ویدیو به وجود آمد.")
+
+# New Function 2: Provide Premium Link if User Has Active Subscription
+async def get_premium_link(update: Update, context: CallbackContext):
+    """
+    Checks if the user has remaining subscription days.
+    If so, sends them a premium link; otherwise, notifies them that their subscription is inactive.
+    """
+    user_id = update.effective_user.id
+    try:
+        user = await user_data.objects.aget(id=user_id)
+        if user.remaining_days > 0:
+            # Replace the below link with the actual destination
+            premium_link = "http://your-premium-content.example.com"
+            await update.message.reply_text(
+                f"اشتراک شما فعال است. برای دسترسی به محتوا از این لینک استفاده کنید: {premium_link}"
+            )
+        else:
+            await update.message.reply_text("متاسفانه اشتراک شما منقضی شده است.")
+    except user_data.DoesNotExist:
+        await update.message.reply_text("کاربر یافت نشد. لطفا ابتدا با دستور /start ثبت نام کنید.")
+
 def main():
     print(
         f"[record--status:start] - time: {datetime.now(tz=timezone('Asia/Tehran'))} -- Info: bot started."
@@ -277,6 +318,9 @@ def main():
     application.add_handler(CallbackQueryHandler(user_purchase_verifing ,pattern="^option_purchase"))
     application.add_handler(CallbackQueryHandler(purchase_handler, pattern="^option_finalize"))
    
+    application.add_handler(CommandHandler("video", get_video))
+    application.add_handler(CommandHandler("getlink", get_premium_link))
+
     application.add_handler(
         MessageHandler(filters.TEXT & ~filters.COMMAND, texts_handler)
     )
