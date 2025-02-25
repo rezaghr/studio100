@@ -112,7 +112,7 @@ async def show_days(update: Update, context: CallbackContext):
             # Create a button with the token price and add to keyboard
             keyboard.append([
                 InlineKeyboardButton(
-                    f"{token_option.price} ریال ",
+                    f"{token_option.price} ریال - {token_option.days} روز",
                     callback_data=f"option_purchase_{i}"
                 )
             ])
