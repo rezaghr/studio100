@@ -4,7 +4,7 @@ from telegram import (
     Update,
     InlineKeyboardMarkup, 
     InlineKeyboardButton,
-    Bot,
+    InputFile,
     )
 from telegram.ext import (
     Application,
@@ -289,9 +289,9 @@ async def get_premium_link(update: Update, context: CallbackContext):
         user = await user_data.objects.aget(id=user_id)
         if user.remaining_days > 0:
             # Replace the below link with the actual destination
-            premium_link = "http://your-premium-content.example.com"
+            # premium_link = "http://your-premium-content.example.com"
             await update.message.reply_text(
-                f"اشتراک شما فعال است. برای دسترسی به محتوا از این لینک استفاده کنید: {premium_link}"
+                f"اشتراک شما فعال است. برای دسترسی به محتوا از این لینک استفاده کنید: {CHANNEL_ID}"
             )
         else:
             await update.message.reply_text("متاسفانه اشتراک شما منقضی شده است.")
