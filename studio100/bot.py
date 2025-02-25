@@ -32,7 +32,6 @@ from admin_panel.models import user_data, price, Video
 from checkout.models import invoices
 
 CHANNEL_ID = os.getenv("CHANNEL_ID")
-CHANNEL_ID = "@studio100_test"  # Use the channel username or ID (e.g., -1001234567890)
 
 
 
