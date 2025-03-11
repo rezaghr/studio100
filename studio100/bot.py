@@ -130,7 +130,7 @@ async def show_days(update: Update, context: CallbackContext):
     
     # Send reply with token balance and purchase options
     await update.message.reply_text(
-        f"تعداد روزهای باقیمانده از اشتراک شما: {user.remaining_days} روز \n\n شما میتوانید برای اقزایش روزهای عضویت در کانال, یکی از گزینه های زیر را انتخاب کرده و هزینه آنرا پرداخت نمایید.",
+        f"تعداد روزهای باقیمانده از اشتراک شما: {user.remaining_days} روز \n\n شما میتوانید برای افزایش روزهای عضویت در کانال, یکی از گزینه های زیر را انتخاب کرده و هزینه آنرا پرداخت نمایید.",
         reply_markup=reply_markup,
     )
 
