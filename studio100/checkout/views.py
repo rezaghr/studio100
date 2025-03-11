@@ -88,7 +88,7 @@ def payment_verify(request, invoice_id):
                 user_datas.save()  # Don't forget to save the user's updated token count
             invoice.status = "OK"
             invoice.save()
-            return HttpResponse(f"status changed to OK, user Token: {user_datas.token}")
+            return HttpResponse(f"status changed to OK, user days: {user_datas.remaining_days}")
         except user_data.DoesNotExist:
             return HttpResponse("کاربر پیدا نشد. درصورتی که مبلغی از حساب شما کم شده است با پشتیبانی تماس بگیرید.")
     else:
