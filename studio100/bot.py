@@ -112,7 +112,7 @@ async def show_days(update: Update, context: CallbackContext):
             # Create a button with the token price and add to keyboard
             keyboard.append([
                 InlineKeyboardButton(
-                    f"{token_option.price} ریال - {token_option.days} روز",
+                    f"{token_option.price:,} ریال - {token_option.days} روز",
                     callback_data=f"option_purchase_{i}"
                 )
             ])
@@ -130,7 +130,7 @@ async def show_days(update: Update, context: CallbackContext):
     
     # Send reply with token balance and purchase options
     await update.message.reply_text(
-        f"تعداد روزهای باقیمانده: {user.remaining_days}. برای افزایش سابسکریپشن یکی از گزینه های زیر را انتخاب کنید:",
+        f"تعداد روزهای باقیمانده از اشتراک شما: {user.remaining_days} روز \n\n شما میتوانید برای اقزایش روزهای عضویت در کانال, یکی از گزینه های زیر را انتخاب کرده و هزینه آنرا پرداخت نمایید.",
         reply_markup=reply_markup,
     )
 
@@ -156,7 +156,7 @@ async def user_purchase_verifing(update: Update, context: CallbackContext):
         )
     replay_markup = InlineKeyboardMarkup(keyboard)
     await query.edit_message_text(
-        text=f"تعداد روزهای های دریافتی: {token_option.days} ایا تایید میکنید؟", reply_markup=replay_markup
+        text=f"تعداد روزی که بعد از پرداخت, به عضویت شما اضافه خواهد شد: {token_option.days} روز.\n آیا تایید میکنید؟", reply_markup=replay_markup
     )
     
 async def purchase_handler(update: Update, context: CallbackContext):
@@ -175,7 +175,7 @@ async def purchase_handler(update: Update, context: CallbackContext):
         await new_invoice.asave()
         purchase_link = f"{website}/checkout/request/{new_invoice.id}"
         await query.edit_message_text(
-            text=f"برای تکمیل خرید از طریق این لینک اقدام کنید: {purchase_link}"
+            text=f"روی لینک زیر بزنید تا هزینه افزایش حق اشتراک را آنلاین پرداخت کنید:\n {purchase_link}"
         )
         
         print(
@@ -191,7 +191,7 @@ async def purchase_handler(update: Update, context: CallbackContext):
         await new_invoice.asave()
         purchase_link = f"{website}/checkout/request/{new_invoice.id}"
         await query.edit_message_text(
-            text=f"برای تکمیل خرید از طریق این لینک اقدام کنید: {purchase_link}"
+            text=f"روی لینک زیر بزنید تا هزینه افزایش حق اشتراک را آنلاین پرداخت کنید:\n {purchase_link}"
         )
         print(
             f"[record--status:successful] - time: {datetime.now(tz=timezone('asia/tehran'))} -- Info: user: {user_id}, added a new invoice."
@@ -233,7 +233,7 @@ async def change_number(update: Update, context: CallbackContext):
     await query.answer()  # Acknowledge the callback
     
     # Prompt the user to enter their new name
-    await query.edit_message_text("لطفا شماره جدید خود را ارسال کنید:")
+    await query.edit_message_text("لطفا شماره موبایل جدید خود را ارسال کنید:")
     
     # Set the context for tracking the next user message as their new name
     context.user_data['awaiting_number'] = True
